@@ -60,7 +60,7 @@ class MainHandler(webapp.RequestHandler):
 
 class Donate(webapp.RequestHandler):
   def post(self):
-    subject = Subject.gql("WHERE name=:name", name="n00b").get()
+    subject = Subject.gql("WHERE name=:name", name="bani").get()
     if subject.status == 'view':
       if self.request.get('status') == 'Donate':
         subject.status = 'send'
