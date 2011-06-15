@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body>
+    {% for edge in edges %}
+      {{ edge.from_node.name }} -> {{ edge.to_node.name }}<br/>
+    {% endfor %}
+    <form action="/insertgraph/insert" method="post">
+      <div>from:<input type="text" name="from"></div>
+      <div>to:<input type="text" name="to"></div>
+      <div><input type="submit" value="Add Edge"></div>
+    </form>
+  </body>
+</html>

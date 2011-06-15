@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body>
+    {% for action in actions %}
+      {{ action.sender.name }} -> {{ action.transferring }} -> {{ action.receiver.name }}<br/>
+    {% endfor %}
+    <form action="/donate" method="post">
+    {% for friend in friends %}
+      <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}"> {% endifequal %}</div>
+    {% endfor %}
+    {% ifequal subject.status "view" %}
+      <div><input type="submit" name="status" value="Donate"></div>
+      <div><input type="submit" name="status" value="Pass"></div>
+    {% else %} {% ifequal subject.status "send" %}
+      <div><input type="submit" name="status" value="Send"></div>
+    {% else %} {% ifequal subject.status "done" %}
+      <div>Waiting for others...</div>
+    {% endifequal %}{% endifequal %}{% endifequal %}
+    </form>
+    <a href="{{ url }}">{{ url_linktext }}</a>
+  </body>
+</html>

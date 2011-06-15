@@ -1,0 +1,16 @@
+application: expnogao
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /insertgraph/.*
+  script: insertgraph.py
+  login: admin
+
+- url: /.*
+  script: main.py
+  login: required
