@@ -3,7 +3,6 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
   </head>
   <body>
-   <br>
     {% for action in actions %}
       {{ action.sender.name }} -> {{ action.transferring }} -> {{ action.receiver.name }}<br/>
     {% endfor %}
