@@ -58,7 +58,7 @@ class MainHandler(webapp.RequestHandler):
       'subject': subject,
       'friends': friends,
     }
-    path = os.path.join(os.path.dirname(__file__), 'index.html')
+    path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
     self.response.out.write(template.render(path, template_values))
     
     #user = users.get_current_user()
