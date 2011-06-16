@@ -31,7 +31,7 @@ class MainHandler(webapp.RequestHandler):
     template_values = {
       'edges': edges
     }
-    path = os.path.join(os.path.dirname(__file__), 'insertgraph.html')
+    path = os.path.join(os.path.dirname(__file__), 'templates/insertgraph.html')
     self.response.out.write(template.render(path, template_values))
 
 def insertEdge(name1, name2):
