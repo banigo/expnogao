@@ -30,6 +30,7 @@ class MainHandler(webapp.RequestHandler):
     #Edge(from_node=Subject.gql("WHERE name=:name", name="n00b").get(), to_node=Subject.gql("WHERE name=:name", name="U8ER").get()).put()
     #users.get_current_user()
     subject = Subject.all().get()
+    #print subject
     #print subject.from_node
     #edge = Edge.all().get()
     #print edge
@@ -60,7 +61,7 @@ class MainHandler(webapp.RequestHandler):
 
 class Donate(webapp.RequestHandler):
   def post(self):
-    subject = Subject.gql("WHERE name=:name", name="bani").get()
+    subject = Subject.gql("WHERE name=:name", name="U8ER").get()
     if subject.status == 'view':
       if self.request.get('status') == 'Donate':
         subject.status = 'send'
