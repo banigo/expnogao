@@ -22,7 +22,7 @@ from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from google.appengine.ext.webapp import template
-from graph import *
+from experiment import *
 
 class MainHandler(webapp.RequestHandler):
   def get(self):
@@ -33,32 +33,43 @@ class MainHandler(webapp.RequestHandler):
     }
     path = os.path.join(os.path.dirname(__file__), 'insertgraph.html')
     self.response.out.write(template.render(path, template_values))
-    #user = users.get_current_user()
-    #if user:
-    #else:
-    #    self.redirect(users.create_login_url(self.request.uri))
+
+def insertEdge(name1, name2):
+  node1 = Subject.gql("WHERE name = :name", name=name1).get()
+  if node1 == None:
+    node1 = Subject(name=name1)
+  node1.put()
+  node2 = Subject.gql("WHERE name = :name", name=name2).get()
+  if node2 == None:
+    node2 = Subject(name=name2)
+  node2.put()
+  edge = Edge.gql("WHERE from_node = :from_node AND to_node = :to_node", from_node=node1, to_node=node2).get()
+  if edge == None:
+    edge = Edge(from_node=node1, to_node=node2)
+  edge.put()
 
 class InsertGraph(webapp.RequestHandler):
   def get(self):
     self.redirect('/insertgraph/')
   def post(self):
-    node1 = Node.gql("WHERE name = :name", name=self.request.get('from')).get()
-    if node1 == None:
-      node1 = Node(name=self.request.get('from'))
-    node1.put()
-    node2 = Node.gql("WHERE name = :name", name=self.request.get('to'), money=self.request.get('tmoney')).get()
-    if node2 == None:
-      node2 = Node(name=self.request.get('to'))
-    node2.put()
-    edge = Edge.gql("WHERE from_node = :from_node AND to_node = :to_node", from_node=node1, to_node=node2).get()
-    if edge == None:
-      edge = Edge(from_node=node1, to_node=node2)
-    edge.put()
+    insertEdge(self.request.get('from'), self.request.get('to'))
     self.redirect('/insertgraph/')
+
+class InsertFile(webapp.RequestHandler):
+  def post(self):
+    # TODO:
+    for name1, name2 in readfile(self.request.get()):# whatever from file
+      insertEdge(name1, name2)
+  def readfile(f):
+    # TODO:
+    # input a file from user's local computer
+    # output a list of edge pair (from, to)
+    return result
     
 def main():
     application = webapp.WSGIApplication([('/insertgraph/', MainHandler),
-                                          ('/insertgraph/insert', InsertGraph)],
+                                          ('/insertgraph/insert', InsertGraph),
+                                          ('/insertgraph/insert_file', InsertFile)],
                                          debug=True)
     util.run_wsgi_app(application)
 
