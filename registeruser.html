@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body>
+    {% for usermapping in usermappings %}
+      {{ usermapping.user.email }} -> {{ usermapping.subject.name }}<br/>
+    {% endfor %}
+    <form action="/register/newuser" method="post">
+      <div>email:<input type="text" name="email"></div>
+      <div>name:<input type="text" name="name"></div>
+      <div><input type="submit" value="Add User"></div>
+    </form>
+  </body>
+</html>

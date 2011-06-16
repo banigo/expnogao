@@ -27,3 +27,6 @@ class Action(db.Model):
   transferring = db.IntegerProperty()
   turn = db.IntegerProperty()
 
+class UserMapping(db.Model):
+  user = db.UserProperty(required=True)
+  subject = db.ReferenceProperty(reference_class=Subject, required=True, collection_name='subject_mapping')

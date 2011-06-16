@@ -28,10 +28,17 @@ class MainHandler(webapp.RequestHandler):
   def get(self):
     #Subject(name='U8ER', money=0, last_action_turn=0, status='view').put()
     #Edge(from_node=Subject.gql("WHERE name=:name", name="n00b").get(), to_node=Subject.gql("WHERE name=:name", name="U8ER").get()).put()
-    #users.get_current_user()
-    subject = Subject.all().get()
+    user = users.get_current_user()
+    #print user
+    #print dir(user)
+    user = users.get_current_user()
+    subject = UserMapping.gql("WHERE user=:user", user=user).get().subject    
+    if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
+      subject.status = 'view'
+      subject.put()
     #print subject
-    #print subject.from_node
+    #print subject.name
+    #print subject.from_node.fetch(100)
     #edge = Edge.all().get()
     #print edge
     actions = Action.all().fetch(1000)
@@ -61,7 +68,8 @@ class MainHandler(webapp.RequestHandler):
 
 class Donate(webapp.RequestHandler):
   def post(self):
-    subject = Subject.gql("WHERE name=:name", name="U8ER").get()
+    user = users.get_current_user()
+    subject = UserMapping.gql("WHERE user=:user", user=user).get().subject
     if subject.status == 'view':
       if self.request.get('status') == 'Donate':
         subject.status = 'send'
@@ -77,6 +85,8 @@ class Donate(webapp.RequestHandler):
           Action(sender=subject, receiver=edge.to_node, transferring=transferring).put()
       subject.status = 'done'
       subject.put()
+    elif subject.status == 'done':
+      pass
     self.redirect('/')
 
 def main():

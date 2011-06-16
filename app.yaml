@@ -11,6 +11,10 @@ handlers:
   script: insertgraph.py
   login: admin
 
+- url: /register/.*
+  script: registeruser.py
+  login: admin
+
 - url: /.*
   script: main.py
   login: required
