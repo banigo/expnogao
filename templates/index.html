@@ -7,6 +7,7 @@
     {% for action in actions %}
       {{ action.sender.name }} -> {{ action.transferring }} -> {{ action.receiver.name }}<br/>
     {% endfor %}
+    I have $ {{ subject.money }} .<br/>
     <form action="/donate" method="post">
     {% for friend in friends %}
       <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}"> {% endifequal %}</div>

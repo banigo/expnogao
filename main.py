@@ -26,21 +26,19 @@ from experiment import *
 
 class MainHandler(webapp.RequestHandler):
   def get(self):
-    #Subject(name='U8ER', money=0, last_action_turn=0, status='view').put()
-    #Edge(from_node=Subject.gql("WHERE name=:name", name="n00b").get(), to_node=Subject.gql("WHERE name=:name", name="U8ER").get()).put()
-    #user = users.get_current_user()
-    #print user
-    #print dir(user)
+    # check whether all players done
+    # summarize the turn if all player done
+    game = getGame()
+    if Subject.gql("WHERE status!='done'").count() == 0:
+      summaryGame()
+    # mapping user to game node
+    # TODO: random assign here
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject    
     if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
       subject.status = 'view'
       subject.put()
-    #print subject
-    #print subject.name
-    #print subject.from_node.fetch(100)
-    #edge = Edge.all().get()
-    #print edge
+    # display
     actions = Action.all().fetch(1000)
     friends = []
     for edge in subject.from_node:
@@ -67,6 +65,7 @@ class MainHandler(webapp.RequestHandler):
     #    self.redirect(users.create_login_url(self.request.uri))
 
 class Donate(webapp.RequestHandler):
+  # TODO: check total donation
   def post(self):
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject
@@ -82,18 +81,39 @@ class Donate(webapp.RequestHandler):
           continue
         transferring = int(self.request.get(edge.to_node.name))
         if transferring != 0:
-          Action(sender=subject, receiver=edge.to_node, transferring=transferring).put()
+          game = getGame()
+          Action(sender=subject, receiver=edge.to_node, transferring=transferring, turn=game.turn).put()
       subject.status = 'done'
       subject.put()
     elif subject.status == 'done':
       pass
     self.redirect('/')
 
+def summaryGame():
+  game = getGame()
+  subjects = Subject.all().fetch(1000)
+  for subject in subjects:
+    actions = Action.gql('WHERE receiver=:subject AND turn=:turn', subject=subject, turn=game.turn).fetch(1000)
+    for action in actions:
+      subject.money += action.transferring
+    actions = Action.gql('WHERE sender=:subject AND turn=:turn', subject=subject, turn=game.turn).fetch(1000)
+    for action in actions:
+      subject.money -= action.transferring
+    subject.status = 'view'
+    subject.put()
+  game.turn = game.turn + 1
+  game.put()
+
+class Logout(webapp.RequestHandler):
+  def get(self):
+    self.redirect(users.create_logout_url('/'))
+
 def main():
-    application = webapp.WSGIApplication([('/', MainHandler),
-                                          ('/donate', Donate)],
+  application = webapp.WSGIApplication([('/', MainHandler),
+                                          ('/donate', Donate),
+                                          ('/logout', Logout)],
                                          debug=True)
-    util.run_wsgi_app(application)
+  util.run_wsgi_app(application)
 
 
 if __name__ == '__main__':

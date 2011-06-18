@@ -17,8 +17,8 @@
 from graph import *
 
 class Subject(Node):
-  money = db.IntegerProperty()
-  last_action_turn = db.IntegerProperty()
+  money = db.IntegerProperty(default=0)
+  #last_action_turn = db.IntegerProperty()
   status = db.StringProperty(choices=set(["view", "send", "done"]))
 
 class Action(db.Model):
@@ -30,3 +30,13 @@ class Action(db.Model):
 class UserMapping(db.Model):
   user = db.UserProperty(required=True)
   subject = db.ReferenceProperty(reference_class=Subject, required=True, collection_name='subject_mapping')
+
+class GameSingleton(db.Model):
+  # TODO: record many experiment
+  turn = db.IntegerProperty()
+    
+def getGame():
+  game = GameSingleton.all().get()
+  if game == None:
+    game = GameSingleton(turn=1)
+  return game

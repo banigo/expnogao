@@ -48,10 +48,19 @@ class NewUser(webapp.RequestHandler):
     insertUser(self.request.get('email'), self.request.get('name'))
     self.redirect('/register/')
 
+class DefaultUser(webapp.RequestHandler):
+  # add default test case (line graph) user mapping
+  # such like A -> A@gmail.com
+  def get(self):
+    insertUser('A@gmail.com', 'A')
+    insertUser('B@gmail.com', 'B')
+    insertUser('C@gmail.com', 'C')
+    self.redirect('/register/')
     
 def main():
     application = webapp.WSGIApplication([('/register/', MainHandler),
-                                          ('/register/newuser', NewUser)],
+                                          ('/register/newuser', NewUser),
+                                          ('/register/defaultuser', DefaultUser)],
                                          debug=True)
     util.run_wsgi_app(application)
 

@@ -65,11 +65,21 @@ class InsertFile(webapp.RequestHandler):
     # input a file from user's local computer
     # output a list of edge pair (from, to)
     return result
-    
+
+class InsertDefault(webapp.RequestHandler):
+  # add default test case (line graph)
+  def get(self):
+    insertEdge('A', 'B')
+    insertEdge('B', 'A')
+    insertEdge('B', 'C')
+    insertEdge('C', 'B')
+    self.redirect('/insertgraph/')
+
 def main():
     application = webapp.WSGIApplication([('/insertgraph/', MainHandler),
                                           ('/insertgraph/insert', InsertGraph),
-                                          ('/insertgraph/insert_file', InsertFile)],
+                                          ('/insertgraph/insert_file', InsertFile),
+                                          ('/insertgraph/insert_default', InsertDefault)],
                                          debug=True)
     util.run_wsgi_app(application)
 
