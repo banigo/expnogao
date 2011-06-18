@@ -28,7 +28,7 @@ class MainHandler(webapp.RequestHandler):
   def get(self):
     #Subject(name='U8ER', money=0, last_action_turn=0, status='view').put()
     #Edge(from_node=Subject.gql("WHERE name=:name", name="n00b").get(), to_node=Subject.gql("WHERE name=:name", name="U8ER").get()).put()
-    user = users.get_current_user()
+    #user = users.get_current_user()
     #print user
     #print dir(user)
     user = users.get_current_user()

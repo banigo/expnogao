@@ -30,7 +30,7 @@ class MainHandler(webapp.RequestHandler):
     template_values = {
       'usermappings': usermappings
     }
-    path = os.path.join(os.path.dirname(__file__), 'registeruser.html')
+    path = os.path.join(os.path.dirname(__file__), 'templates/registeruser.html')
     self.response.out.write(template.render(path, template_values))
 
 def insertUser(email, subjectName):
