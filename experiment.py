@@ -20,6 +20,7 @@ class Subject(Node):
   money = db.IntegerProperty(default=0)
   #last_action_turn = db.IntegerProperty()
   status = db.StringProperty(choices=set(["view", "send", "done"]))
+  #map = db.BooleanProperty()
 
 class Action(db.Model):
   sender = db.ReferenceProperty(reference_class=Subject, required=True, collection_name='sender')
@@ -28,7 +29,7 @@ class Action(db.Model):
   turn = db.IntegerProperty()
 
 class UserMapping(db.Model):
-  user = db.UserProperty(required=True)
+  user = db.UserProperty()
   subject = db.ReferenceProperty(reference_class=Subject, required=True, collection_name='subject_mapping')
 
 class GameSingleton(db.Model):

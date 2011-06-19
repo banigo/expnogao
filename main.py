@@ -16,6 +16,7 @@
 #
 import cgi
 import os
+import random
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
@@ -31,10 +32,19 @@ class MainHandler(webapp.RequestHandler):
     game = getGame()
     if Subject.gql("WHERE status!='done'").count() == 0:
       summaryGame()
+    user = users.get_current_user()
     # mapping user to game node
     # TODO: random assign here
-    user = users.get_current_user()
-    subject = UserMapping.gql("WHERE user=:user", user=user).get().subject    
+    maps = UserMapping.gql("WHERE user=:user", user=None)
+    map = None
+    if maps.count() != 0:
+      map = maps[random.randint(0, maps.count()-1)] 
+      if map == None:
+        map = UserMapping.gql("WHERE user=:user", user=user).get()    
+      map.user = user
+      map.put()  
+    if map != None:
+      subject = map.subject
     if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
       subject.status = 'view'
       subject.put()

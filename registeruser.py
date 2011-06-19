@@ -36,12 +36,12 @@ class MainHandler(webapp.RequestHandler):
 def insertUser(email, subjectName):
   subject = Subject.gql("WHERE name = :name", name=subjectName).get()
   if subject == None:
-    subject = Subject(name=subjectName)
-  subject.put()
-  usermapping = UserMapping.gql("WHERE user = User(:email) AND subject_mapping = :subject", email=email, subject=subject).get()
-  if usermapping == None:
-    usermapping = UserMapping(user=users.User(email), subject=subject)
-  usermapping.put()
+    subject = Subject(name=subjectName, map=False)
+    subject.put()
+  #usermapping = UserMapping.gql("WHERE user = User(:email) AND subject_mapping = :subject", email=email, subject=subject).get()
+  #if usermapping == None:
+  #  usermapping = UserMapping(user=users.User(email), subject=subject)
+  #  usermapping.put()
 
 class NewUser(webapp.RequestHandler):
   def post(self):

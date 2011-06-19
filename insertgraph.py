@@ -37,16 +37,20 @@ class MainHandler(webapp.RequestHandler):
 def insertEdge(name1, name2):
   node1 = Subject.gql("WHERE name = :name", name=name1).get()
   if node1 == None:
-    node1 = Subject(name=name1)
-  node1.put()
+    node1 = Subject(name=name1, map=False)
+    node1.put()
+    map = UserMapping(subject=node1)
+    map.put()
   node2 = Subject.gql("WHERE name = :name", name=name2).get()
   if node2 == None:
-    node2 = Subject(name=name2)
-  node2.put()
+    node2 = Subject(name=name2, map=False)
+    node2.put()
+    map = UserMapping(subject=node2)
+    map.put()
   edge = Edge.gql("WHERE from_node = :from_node AND to_node = :to_node", from_node=node1, to_node=node2).get()
   if edge == None:
     edge = Edge(from_node=node1, to_node=node2)
-  edge.put()
+    edge.put()
 
 class InsertGraph(webapp.RequestHandler):
   def get(self):
