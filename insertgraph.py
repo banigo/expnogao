@@ -92,7 +92,7 @@ class InsertFile(webapp.RequestHandler):
         if e == '':
           continue
         e = e[e.index('(') + 1:]
-        e = e.split('->')
+        e = e.split('-')
         edge = []
         edge.append(e[0].strip())
         edge.append(e[1].strip())
