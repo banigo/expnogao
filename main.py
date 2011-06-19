@@ -26,6 +26,14 @@ from google.appengine.ext.webapp import template
 from experiment import *
 
 class MainHandler(webapp.RequestHandler):
+  def random_map(self, key, user):
+    map = db.get(key)
+    if map.user == None:
+      map.user = user
+      map.put()
+      return map
+    else:
+      return None
   def get(self):
     # check whether all players done
     # summarize the turn if all player done
@@ -35,14 +43,12 @@ class MainHandler(webapp.RequestHandler):
     user = users.get_current_user()
     # mapping user to game node
     # TODO: random assign here
-    maps = UserMapping.gql("WHERE user=:user", user=None)
-    map = None
-    if maps.count() != 0:
-      map = maps[random.randint(0, maps.count()-1)] 
-      if map == None:
-        map = UserMapping.gql("WHERE user=:user", user=user).get()    
-      map.user = user
-      map.put()  
+    map = UserMapping.gql("WHERE user=:user", user=user).get()
+    if map == None:
+      maps = db.GqlQuery("SELECT * FROM UserMapping WHERE user=:user", user=None).fetch(1000)
+      while len(maps) != 0 and map == None:
+      	map = maps.pop(random.randint(0, len(maps) - 1))
+        map = db.run_in_transaction(self.random_map, map.key(), user)
     if map != None:
       subject = map.subject
     if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
