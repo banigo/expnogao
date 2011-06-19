@@ -16,6 +16,7 @@
 #
 import cgi
 import os
+import string
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
@@ -66,17 +67,27 @@ class InsertFile(webapp.RequestHandler):
     self.response.out.write(template.render(path, template_values))
   def post(self):
     # TODO:
-    file_contents = self.request.POST.get('graphfile').file.read() 
-    print 'Content-type:text/plain'
-    print ''
-    print file_contents
-    #for name1, name2 in readfile(self.request.get()):# whatever from file
-    #  insertEdge(name1, name2)
-  def readfile(f):
+    for name1, name2 in self.readfile(self.request.POST.get('graphfile').file.read()):# whatever from file
+      insertEdge(name1, name2)
+    self.redirect('/insertgraph/')
+  def readfile(self, file_content):
     # TODO:
     # input a file from user's local computer
     # output a list of edge pair (from, to)
-    return result
+    edges = []
+    file_content = string.replace(file_content, '\r', '')
+    file_content = string.replace(file_content, '\n', '')
+    file_content = file_content.split(')')
+    for e in file_content:
+        if e == '':
+          continue
+        e = e[e.index('(') + 1:]
+        e = e.split('->')
+        edge = []
+        edge.append(e[0].strip())
+        edge.append(e[1].strip())
+        edges.append(edge)
+    return edges
 
 class InsertDefault(webapp.RequestHandler):
   # add default test case (line graph)
