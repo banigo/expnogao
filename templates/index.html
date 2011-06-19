@@ -3,21 +3,23 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
   </head>
   <body>
-    {% for action in actions %}
-      {{ action.sender.name }} -> {{ action.transferring }} -> {{ action.receiver.name }}<br/>
-    {% endfor %}
-    I have $ {{ subject.money }} .<br/>
     <form action="/donate" method="post">
-    {% for friend in friends %}
-      <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}"> {% endifequal %}</div>
-    {% endfor %}
     {% ifequal subject.status "view" %}
-      <div><input type="submit" name="status" value="Donate"></div>
-      <div><input type="submit" name="status" value="Pass"></div>
+      Your current balance: {{ subject.money }} tokens.<br/>
+      <br/>
+      {% for friend in friends %}
+        <div>{{ friend.name }}’s balance: {{friend.money}} tokens</div>
+      {% endfor %}
+      <br/>
+      Would you like to make any donation to your fellow subjects? <br/>
+      <div><input type="submit" name="status" value="Yes">   <input type="submit" name="status" value="No"></div>
     {% else %} {% ifequal subject.status "send" %}
+      {% for friend in friends %}
+        <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}"> {% endifequal %}</div>
+      {% endfor %}
       <div><input type="submit" name="status" value="Send"></div>
     {% else %} {% ifequal subject.status "done" %}
-      <div>Waiting for others...</div>
+      <div>Thank you. Please wait and we will proceed once everyone is done with their part.</div>
     {% endifequal %}{% endifequal %}{% endifequal %}
     </form>
     <a href="{{ url }}">{{ url_linktext }}</a>

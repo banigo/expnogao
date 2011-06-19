@@ -70,9 +70,9 @@ class Donate(webapp.RequestHandler):
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject
     if subject.status == 'view':
-      if self.request.get('status') == 'Donate':
+      if self.request.get('status') == 'Yes':
         subject.status = 'send'
-      elif self.request.get('status') == 'Pass':
+      elif self.request.get('status') == 'No':
         subject.status = 'done'
       subject.put()
     elif subject.status == 'send':
