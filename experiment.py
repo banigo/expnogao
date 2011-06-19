@@ -35,9 +35,12 @@ class UserMapping(db.Model):
 class GameSingleton(db.Model):
   # TODO: record many experiment
   turn = db.IntegerProperty()
+  allDone = db.BooleanProperty()
     
 def getGame():
   game = GameSingleton.all().get()
   if game == None:
-    game = GameSingleton(turn=1)
+    game = GameSingleton(turn=1, allDone=False)
+    game.put()
   return game
+

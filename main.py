@@ -34,12 +34,21 @@ class MainHandler(webapp.RequestHandler):
       return map
     else:
       return None
+  def checkAllDone(self, key):
+    game = db.get(key)
+    if game.allDone == False:
+       game.allDone = True
+       game.put()
+       return True
+    else:
+       return False
+   
   def get(self):
     # check whether all players done
     # summarize the turn if all player done
     game = getGame()
-    if Subject.gql("WHERE status!='done'").count() == 0:
-      summaryGame()
+    #if Subject.gql("WHERE status!='done'").count() == 0:
+    #  :summaryGame()
     user = users.get_current_user()
     # mapping user to game node
     map = UserMapping.gql("WHERE user=:user", user=user).get()
@@ -53,6 +62,14 @@ class MainHandler(webapp.RequestHandler):
     if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
       subject.status = 'view'
       subject.put()
+    if subject.status == 'view' and game.allDone == True:
+       game.allDone = False
+       game.put()
+    if subject.status == 'done':
+      if Subject.gql("WHERE status!='done'").count() == 0:
+       if db.run_in_transaction(self.checkAllDone, game.key()):
+         summaryGame()
+    
     # display
     actions = Action.all().fetch(1000)
     friends = []
@@ -74,11 +91,6 @@ class MainHandler(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
     self.response.out.write(template.render(path, template_values))
     
-    #user = users.get_current_user()
-    #if user:
-    #ese:
-    #    self.redirect(users.create_login_url(self.request.uri))
-
 class Donate(webapp.RequestHandler):
   # TODO: check total donation (use javascript)
   def post(self):
@@ -103,6 +115,7 @@ class Donate(webapp.RequestHandler):
     elif subject.status == 'done':
       pass
     self.redirect('/')
+ 
 
 def summaryGame():
   game = getGame()

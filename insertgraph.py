@@ -17,6 +17,7 @@
 import cgi
 import os
 import string
+import random
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
@@ -66,10 +67,23 @@ class InsertFile(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates/insertfile.html')
     self.response.out.write(template.render(path, template_values))
   def post(self):
-    for name1, name2 in self.readfile(self.request.POST.get('graphfile').file.read()):# whatever from file
+    names = set()
+    for name1, name2 in self.readFile(self.request.POST.get('graphfile').file.read()):# whatever from file
       insertEdge(name1, name2)
+      names.add(name1)
+      names.add(name2)
+    self.giveTokens(list(names))
     self.redirect('/insertgraph/')
-  def readfile(self, file_content):
+  def giveTokens(self, names):
+    tokens = 10
+    while(len(names) != 0):
+      name1 = names.pop(random.randint(0, len(names) - 1))
+      subject1 = Subject.gql("WHERE name = :name", name=name1).get()
+      subject1.money = tokens
+      subject1.put()
+      tokens += 10
+    
+  def readFile(self, file_content):
     edges = []
     file_content = string.replace(file_content, '\r', '')
     file_content = string.replace(file_content, '\n', '')

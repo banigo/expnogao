@@ -14,6 +14,7 @@
       Would you like to make any donation to your fellow subjects? <br/>
       <div><input type="submit" name="status" value="Yes">   <input type="submit" name="status" value="No"></div>
     {% else %} {% ifequal subject.status "send" %}
+      Your current balance: {{ subject.money }} tokens.<br/>
       {% for friend in friends %}
         <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}"> {% endifequal %}</div>
       {% endfor %}
