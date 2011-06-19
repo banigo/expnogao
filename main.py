@@ -61,7 +61,7 @@ class MainHandler(webapp.RequestHandler):
     
     #user = users.get_current_user()
     #if user:
-    #else:
+    #ese:
     #    self.redirect(users.create_login_url(self.request.uri))
 
 class Donate(webapp.RequestHandler):
