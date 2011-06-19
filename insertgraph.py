@@ -60,10 +60,18 @@ class InsertGraph(webapp.RequestHandler):
     self.redirect('/insertgraph/')
 
 class InsertFile(webapp.RequestHandler):
+  def get(self):
+    template_values = {}
+    path = os.path.join(os.path.dirname(__file__), 'templates/insertfile.html')
+    self.response.out.write(template.render(path, template_values))
   def post(self):
     # TODO:
-    for name1, name2 in readfile(self.request.get()):# whatever from file
-      insertEdge(name1, name2)
+    file_contents = self.request.POST.get('graphfile').file.read() 
+    print 'Content-type:text/plain'
+    print ''
+    print file_contents
+    #for name1, name2 in readfile(self.request.get()):# whatever from file
+    #  insertEdge(name1, name2)
   def readfile(f):
     # TODO:
     # input a file from user's local computer
