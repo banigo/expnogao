@@ -42,7 +42,6 @@ class MainHandler(webapp.RequestHandler):
       summaryGame()
     user = users.get_current_user()
     # mapping user to game node
-    # TODO: random assign here
     map = UserMapping.gql("WHERE user=:user", user=user).get()
     if map == None:
       maps = db.GqlQuery("SELECT * FROM UserMapping WHERE user=:user", user=None).fetch(1000)
@@ -81,7 +80,7 @@ class MainHandler(webapp.RequestHandler):
     #    self.redirect(users.create_login_url(self.request.uri))
 
 class Donate(webapp.RequestHandler):
-  # TODO: check total donation
+  # TODO: check total donation (use javascript)
   def post(self):
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject

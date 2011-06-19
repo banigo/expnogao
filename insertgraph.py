@@ -66,14 +66,10 @@ class InsertFile(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'templates/insertfile.html')
     self.response.out.write(template.render(path, template_values))
   def post(self):
-    # TODO:
     for name1, name2 in self.readfile(self.request.POST.get('graphfile').file.read()):# whatever from file
       insertEdge(name1, name2)
     self.redirect('/insertgraph/')
   def readfile(self, file_content):
-    # TODO:
-    # input a file from user's local computer
-    # output a list of edge pair (from, to)
     edges = []
     file_content = string.replace(file_content, '\r', '')
     file_content = string.replace(file_content, '\n', '')
