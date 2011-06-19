@@ -66,14 +66,17 @@ class InsertFile(webapp.RequestHandler):
     template_values = {}
     path = os.path.join(os.path.dirname(__file__), 'templates/insertfile.html')
     self.response.out.write(template.render(path, template_values))
+  
   def post(self):
     names = set()
     for name1, name2 in self.readFile(self.request.POST.get('graphfile').file.read()):# whatever from file
       insertEdge(name1, name2)
+      insertEdge(name2, name1)
       names.add(name1)
       names.add(name2)
     self.giveTokens(list(names))
     self.redirect('/insertgraph/')
+
   def giveTokens(self, names):
     tokens = 10
     while(len(names) != 0):
