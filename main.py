@@ -59,6 +59,11 @@ class MainHandler(webapp.RequestHandler):
         map = db.run_in_transaction(self.random_map, map.key(), user)
     if map != None:
       subject = map.subject
+    else:
+      print 'Content-type:text/plain'
+      print ''
+      print 'The game is expired.'
+      return
     if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
       subject.status = 'view'
       subject.put()
