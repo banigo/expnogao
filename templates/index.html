@@ -14,11 +14,33 @@
       Would you like to make any donation to your fellow subjects? <br/>
       <div><input type="submit" name="status" value="Yes">   <input type="submit" name="status" value="No"></div>
     {% else %} {% ifequal subject.status "send" %}
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+      <script>
+      function check(divId)
+      {
+          if($(divId).val().search(/^[0-9]+$/) != 0)
+          {
+            $(divId).val("0");
+          }
+          var total = 0;
+          {% for friend in friends %}
+          total += parseInt($("#{{ friend.name }}").val(), 10);
+          {% endfor %} 
+          if(total > parseInt("{{ subject.money }}", 10))
+          {
+            $(divId).val("0");
+            alert("Not Enough Tokens!!");
+          }
+
+      }
+      
+        
+      </script>
       Your current balance: {{ subject.money }} tokens.<br/>
       {% for friend in friends %}
-        <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}"> {% endifequal %}</div>
+        <div>{{ friend.name }} {% ifequal subject.status "send" %} <input type="text" name="{{ friend.name }}" id="{{ friend.name }}" value="0" onkeyup=check("#{{ friend.name }}")> {% endifequal %}</div>
       {% endfor %}
-      <div><input type="submit" name="status" value="Send"></div>
+      <div><input type="submit" name="status" value="Send" id="send"></div>
     {% else %} {% ifequal subject.status "done" %}
       <script>
       setTimeout("window.location.reload()",1000)
