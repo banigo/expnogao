@@ -47,8 +47,6 @@ class MainHandler(webapp.RequestHandler):
     # check whether all players done
     # summarize the turn if all player done
     game = getGame()
-    #if Subject.gql("WHERE status!='done'").count() == 0:
-    #  :summaryGame()
     user = users.get_current_user()
     # mapping user to game node
     map = UserMapping.gql("WHERE user=:user", user=user).get()
@@ -77,6 +75,14 @@ class MainHandler(webapp.RequestHandler):
     
     # display
     actions = Action.all().fetch(1000)
+    sends = Action.gql("WHERE sender = :subject AND turn = :turn", subject=subject, turn=(game.turn - 1)).fetch(1000)
+    receives = Action.gql("WHERE receiver = :subject AND turn = :turn", subject=subject, turn=(game.turn - 1)).fetch(1000)
+    sendM = 0
+    for s in sends:
+      sendM += s.transferring
+    receiveM = 0
+    for r in receives:
+      receiveM += r.transferring
     friends = []
     for edge in subject.from_node:
       friends.append(edge.to_node)
@@ -92,6 +98,9 @@ class MainHandler(webapp.RequestHandler):
       'actions': actions,
       'subject': subject,
       'friends': friends,
+      'game': game, 
+      'send': sendM,
+      'receive': receiveM, 
     }
     path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
     self.response.out.write(template.render(path, template_values))

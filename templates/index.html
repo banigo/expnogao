@@ -5,8 +5,12 @@
   <body>
     <form action="/donate" method="post">
     {% ifequal subject.status "view" %}
+      {% ifnotequal game.turn 0 %}
+      You had donated {{ send }} tokens out and received {{ receive }} tokens from others.<br/><br/>
+      {% endifnotequal %}
       Your current balance: {{ subject.money }} tokens.<br/>
       <br/>
+      
       {% for friend in friends %}
         <div>{{ friend.name }}’s balance: {{friend.money}} tokens</div>
       {% endfor %}
