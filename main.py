@@ -115,6 +115,8 @@ class Donate(webapp.RequestHandler):
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject
     if subject.status == 'send':
+      subject.status = 'done'
+      subject.put()
       for edge in subject.from_node:
         if len(self.request.get(edge.to_node.name)) == 0:
           continue
@@ -122,8 +124,6 @@ class Donate(webapp.RequestHandler):
         if transferring != 0:
           game = getGame()
           Action(sender=subject, receiver=edge.to_node, transferring=transferring, turn=game.turn).put()
-      subject.status = 'done'
-      subject.put()
     elif subject.status == 'done':
       pass
     self.redirect('/')
