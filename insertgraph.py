@@ -69,13 +69,23 @@ class InsertFile(webapp.RequestHandler):
   
   def post(self):
     names = set()
-    for name1, name2 in self.readFile(self.request.POST.get('graphfile').file.read()):# whatever from file
+    edges, dist = self.readFile(self.request.POST.get('graphfile').file.read())
+    for name1, name2 in edges:# whatever from file
       insertEdge(name1, name2)
       insertEdge(name2, name1)
       names.add(name1)
       names.add(name2)
-    self.giveTokens(list(names))
+    if len(dist) == 0:
+      self.giveTokens(list(names))
+    else:
+      self.giveTokensC(dist)
     self.redirect('/insertgraph/')
+  
+  def giveTokensC(self, dist):
+    for (name1, tokens) in dist.items():
+      subject1 = Subject.gql("WHERE name = :name", name=name1).get()
+      subject1.money = tokens
+      subject1.put()
 
   def giveTokens(self, names):
     tokens = 10
@@ -91,16 +101,31 @@ class InsertFile(webapp.RequestHandler):
     file_content = string.replace(file_content, '\r', '')
     file_content = string.replace(file_content, '\n', '')
     file_content = file_content.split(')')
+    nodes = set()
+    dist = {}
     for e in file_content:
         if e == '':
           continue
-        e = e[e.index('(') + 1:]
-        e = e.split('-')
-        edge = []
-        edge.append(e[0].strip())
-        edge.append(e[1].strip())
-        edges.append(edge)
-    return edges
+        if '-' in e:
+          e = e[e.index('(') + 1:]
+          e = e.split('-')
+          edge = []
+          edge.append(e[0].strip())
+          nodes.add(e[0].strip())
+          edge.append(e[1].strip())
+          nodes.add(e[1].strip())
+          edges.append(edge)
+    for node in nodes:
+      dist[node] = 0
+    for e in file_content:
+      if e == '':
+        continue
+      if ':' in e:
+        e = e[e.index('(') + 1:]    
+        e = e.split(':')
+        if e[0].strip() in dist:
+          dist[e[0].strip()] = int(e[1].strip())    
+    return edges, dist
 
 class InsertDefault(webapp.RequestHandler):
   # add default test case (line graph)
