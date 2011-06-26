@@ -50,6 +50,10 @@ class MainHandler(webapp.RequestHandler):
     user = users.get_current_user()
     # mapping user to game node
     map = UserMapping.gql("WHERE user=:user", user=user).get()
+    global_maps = UserMapping.all().fetch(1000)
+    global_subjects = set()
+    for m in global_maps:
+      global_subjects.add(m.subject)
     if map == None:
       maps = db.GqlQuery("SELECT * FROM UserMapping WHERE user=:user", user=None).fetch(1000)
       while len(maps) != 0 and map == None:
@@ -62,17 +66,16 @@ class MainHandler(webapp.RequestHandler):
       print ''
       print 'The game is expired.'
       return
-    if subject.status != 'view' and subject.status != 'send' and subject.status != 'done':
-      subject.status = 'view'
+    if subject.status != 'send' and subject.status != 'done':
+      subject.status = 'send'
       subject.put()
-    if subject.status == 'view' and game.allDone == True:
+    if subject.status == 'send' and game.allDone == True:
        game.allDone = False
        game.put()
     if subject.status == 'done':
       if Subject.gql("WHERE status!='done'").count() == 0:
        if db.run_in_transaction(self.checkAllDone, game.key()):
          summaryGame()
-    
     # display
     actions = Action.all().fetch(1000)
     sends = Action.gql("WHERE sender = :subject AND turn = :turn", subject=subject, turn=(game.turn - 1)).fetch(1000)
@@ -100,7 +103,8 @@ class MainHandler(webapp.RequestHandler):
       'friends': friends,
       'game': game, 
       'send': sendM,
-      'receive': receiveM, 
+      'receive': receiveM,
+      'globals': global_subjects, 
     }
     path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
     self.response.out.write(template.render(path, template_values))
@@ -110,13 +114,7 @@ class Donate(webapp.RequestHandler):
   def post(self):
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject
-    if subject.status == 'view':
-      if self.request.get('status') == 'Yes':
-        subject.status = 'send'
-      elif self.request.get('status') == 'No':
-        subject.status = 'done'
-      subject.put()
-    elif subject.status == 'send':
+    if subject.status == 'send':
       for edge in subject.from_node:
         if len(self.request.get(edge.to_node.name)) == 0:
           continue
@@ -141,7 +139,7 @@ def summaryGame():
     actions = Action.gql('WHERE sender=:subject AND turn=:turn', subject=subject, turn=game.turn).fetch(1000)
     for action in actions:
       subject.money -= action.transferring
-    subject.status = 'view'
+    subject.status = 'send'
     subject.put()
   game.turn = game.turn + 1
   game.put()

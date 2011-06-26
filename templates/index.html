@@ -4,20 +4,7 @@
   </head>
   <body>
     <form action="/donate" method="post">
-    {% ifequal subject.status "view" %}
-      {% ifnotequal game.turn 1 %}
-      You had donated {{ send }} tokens out and received {{ receive }} tokens from others.<br/><br/>
-      {% endifnotequal %}
-      Your current balance: {{ subject.money }} tokens.<br/>
-      <br/>
-      
-      {% for friend in friends %}
-        <div>{{ friend.name }}’s balance: {{friend.money}} tokens</div>
-      {% endfor %}
-      <br/>
-      Would you like to make any donation to your fellow subjects? <br/>
-      <div><input type="submit" name="status" value="Yes">   <input type="submit" name="status" value="No"></div>
-    {% else %} {% ifequal subject.status "send" %}
+    {% ifequal subject.status "send" %}
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
       <script>
       function check(divId)
@@ -40,8 +27,11 @@
       
         
       </script>
-      Your current balance: {{ subject.money }} tokens.<br/>
+      You are {{ subject.name }}. Your current balance: {{ subject.money }} tokens.<br/>
       <br/>
+      {% for s in globals %}
+        {{ s.name }}’s balance: {{s.money}} tokens<br/>
+      {% endfor %}<br/>
       Please indicate how much you would like to donate to each of the following:<br/><br/>
       &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYour donation:<br/>
       <br/>
@@ -54,7 +44,7 @@
       setTimeout("window.location.reload()",1000)
       </script>
       <div>Thank you. Please wait and we will proceed once everyone is done with their part.</div>
-    {% endifequal %}{% endifequal %}{% endifequal %}
+    {% endifequal %}{% endifequal %}
     </form>
     <a href="{{ url }}">{{ url_linktext }}</a>
   </body>
