@@ -1,4 +1,4 @@
-<html>
+﻿<html>
   <head>
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
   </head>
@@ -55,11 +55,17 @@
       setTimeout("time_up()", 120000);
       
       </script>
-      You are {{ subject.name }}. Your current balance: {{ subject.money }} tokens.<br/>
+      You are {{ subject.name }}.<br/>
+      {% ifnotequal turn 1 %}
+        You had donated {{ send }} tokens out and received {{ receive }} tokens from others.<br/>
+      {% endifnotequal %}
+      Your current balance: {{ subject.money }} tokens.<br/>
       <br/>
-      {% for s in globals %}
-        {{ s.name }}’s balance: {{s.money}} tokens<br/>
-      {% endfor %}<br/>
+      {% if showGlobal %}
+        {% for s in globals %}
+          {{ s.name }}’s balance: {{s.money}} tokens<br/>
+        {% endfor %}<br/>
+      {% endif %}<br/>
       Please indicate how much you would like to donate to each of the following:<br/><br/>
       &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYour donation:<br/>
       <br/>

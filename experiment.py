@@ -36,11 +36,12 @@ class GameSingleton(db.Model):
   # TODO: record many experiment
   turn = db.IntegerProperty()
   allDone = db.BooleanProperty()
+  gameOver = db.BooleanProperty()
     
 def getGame():
   game = GameSingleton.all().get()
   if game == None:
-    game = GameSingleton(turn=1, allDone=False)
+    game = GameSingleton(turn=1, allDone=False, gameOver=False)
     game.put()
   return game
 

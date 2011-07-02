@@ -14,6 +14,10 @@ handlers:
   script: insertgraph.py
   login: admin
 
+- url: /output/.*
+  script: output.py
+  login: admin
+
 - url: /register/.*
   script: registeruser.py
   login: admin

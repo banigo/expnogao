@@ -46,7 +46,21 @@ class MainHandler(webapp.RequestHandler):
   def get(self):
     # check whether all players done
     # summarize the turn if all player done
+    
+    # if game is over, output gameover message
     game = getGame()
+    if game.gameOver == True:
+      if users.get_current_user():
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+      template_values = {
+        'url' : url,
+        'url_linktext': url_linktext,
+      }
+      path = os.path.join(os.path.dirname(__file__), 'templates/gameover.html')
+      self.response.out.write(template.render(path, template_values))
+      return
+    
     user = users.get_current_user()
     # mapping user to game node
     map = UserMapping.gql("WHERE user=:user", user=user).get()
