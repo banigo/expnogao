@@ -37,11 +37,13 @@ class GameSingleton(db.Model):
   turn = db.IntegerProperty()
   allDone = db.BooleanProperty()
   gameOver = db.BooleanProperty()
+  silent = db.IntegerProperty()
+  stopTurns = db.IntegerProperty()
     
 def getGame():
   game = GameSingleton.all().get()
   if game == None:
-    game = GameSingleton(turn=1, allDone=False, gameOver=False)
+    game = GameSingleton(turn=1, allDone=False, gameOver=False, stopTurns=3, silent=0)
     game.put()
   return game
 

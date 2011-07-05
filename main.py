@@ -146,6 +146,14 @@ class Donate(webapp.RequestHandler):
 def summaryGame():
   game = getGame()
   subjects = Subject.all().fetch(1000)
+  actions = Action.gql('WHERE turn=:turn', turn=game.turn).fetch(1000)
+  if len(actions) > 0:
+    game.silent = 0
+  else:
+    game.silent = game.silent + 1
+    if game.silent >= game.stopTurns:
+      game.silent = 0
+      game.gameOver = True
   for subject in subjects:
     actions = Action.gql('WHERE receiver=:subject AND turn=:turn', subject=subject, turn=game.turn).fetch(1000)
     for action in actions:

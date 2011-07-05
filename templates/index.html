@@ -14,6 +14,7 @@
             $(divId).val("0");
           }
           var total = 0;
+	  $(divId).val(parseInt($(divId).val(), 10).toString());
           {% for friend in friends %}
           total += parseInt($("#{{ friend.name }}").val(), 10);
           {% endfor %} 
@@ -70,7 +71,7 @@
       &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYour donation:<br/>
       <br/>
       {% for friend in friends %}
-        <div>{{ friend.name }}’s balance: {{friend.money}} tokens &nbsp &nbsp &nbsp &nbsp<input type="text" name="{{ friend.name }}" id="{{ friend.name }}" value="0" onkeyup=check("#{{ friend.name }}")></div>
+        <div>{{ friend.name }}’s balance: {{friend.money}} tokens &nbsp &nbsp &nbsp &nbsp<input type="text" name="{{ friend.name }}" id="{{ friend.name }}" value="0" onblur=check("#{{ friend.name }}")></div>
       {% endfor %}<br/>
       <div><input type="submit" name="status" value="Send" id="send"></div>
     {% else %} {% ifequal subject.status "done" %}
