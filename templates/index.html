@@ -68,10 +68,10 @@
         {% endfor %}<br/>
       {% endif %}<br/>
       Please indicate how much you would like to donate to each of the following:<br/><br/>
-      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspYour donation:<br/>
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Your donation:<br/>
       <br/>
       {% for friend in friends %}
-        <div>{{ friend.name }}’s balance: {{friend.money}} tokens &nbsp &nbsp &nbsp &nbsp<input type="text" name="{{ friend.name }}" id="{{ friend.name }}" value="0" onblur=check("#{{ friend.name }}")></div>
+        <div>{{ friend.name }}’s balance: {{friend.money}} tokens <input type="text" name="{{ friend.name }}" id="{{ friend.name }}" value="0" onblur=check("#{{ friend.name }}") style="position:absolute; left:255px;"></div>
       {% endfor %}<br/>
       <div><input type="submit" name="status" value="Send" id="send"></div>
     {% else %} {% ifequal subject.status "done" %}
