@@ -39,11 +39,22 @@ class GameSingleton(db.Model):
   gameOver = db.BooleanProperty()
   silent = db.IntegerProperty()
   stopTurns = db.IntegerProperty()
-    
+  rankOrder = db.StringProperty(choices=set(["ascend", "descend", "random"]))
+  countdownTime = db.IntegerProperty()
+
+class MessageSingleton(db.Model):
+  instruction = db.StringProperty()
+
 def getGame():
   game = GameSingleton.all().get()
   if game == None:
-    game = GameSingleton(turn=1, allDone=False, gameOver=False, stopTurns=3, silent=0)
+    game = GameSingleton(turn=1, allDone=False, gameOver=False, stopTurns=3, silent=0, rankOrder="ascend", countdownTime=120000)
     game.put()
   return game
 
+def getMessage():
+  message = MessageSingleton.all().get()
+  if message == None:
+    message = MessageSingleton(instruction="")
+    message.put()
+  return message

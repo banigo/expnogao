@@ -28,6 +28,7 @@ from experiment import *
 
 class MainHandler(webapp.RequestHandler):
   def get(self):
+    game = getGame()
     edges_query = Edge.all()
     edges = edges_query.fetch(10)
     template_values = {

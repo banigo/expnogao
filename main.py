@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 import cgi
+import operator
 import os
 import random
 from google.appengine.api import users
@@ -100,9 +101,18 @@ class MainHandler(webapp.RequestHandler):
     receiveM = 0
     for r in receives:
       receiveM += r.transferring
+    # Change the money rank order
     friends = []
     for edge in subject.from_node:
-      friends.append(edge.to_node)
+      neighbor = Subject.gql("WHERE name=:to_node", to_node=edge.to_node.name).get()
+      # No need to process an empty node
+      if neighbor == None: continue
+      friends.append((edge.to_node, neighbor.money))
+    if game.rankOrder == "ascend": friends = sorted(friends, key=operator.itemgetter(1))
+    elif game.rankOrder == "descend": friends = sorted(friends, key=operator.itemgetter(1), reverse=True)
+    elif game.rankOrder == "random": random.shuffle(friends)
+    friends = [i[0] for i in friends]
+    # Log in or log out
     if users.get_current_user():
       url = users.create_logout_url(self.request.uri)
       url_linktext = 'Logout'
@@ -118,7 +128,9 @@ class MainHandler(webapp.RequestHandler):
       'game': game, 
       'send': sendM,
       'receive': receiveM,
-      'globals': global_subjects, 
+      'globals': global_subjects,
+      'turn' : game.turn,
+      'countdownTime' : game.countdownTime,
     }
     path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
     self.response.out.write(template.render(path, template_values))
