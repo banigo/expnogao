@@ -58,16 +58,18 @@
       </script>
       You are {{ subject.name }}.<br/>
       {% ifnotequal turn 1 %}
-        You had donated {{ send }} tokens out and received {{ receive }} tokens from others.<br/>
+        The record shows that you donated a total of {{ send }} tokens to other participants in the previous round. In the meantime, you received a total of {{ receive }} tokens donated from others in the previous round.
       {% endifnotequal %}
-      Your current balance: {{ subject.money }} tokens.<br/>
+      Your current balance is: {{ subject.money }} tokens.<br/>
       <br/>
+      
+      The balances of other participants’ accounts are shown as follows.
       {% if showGlobal %}
         {% for s in globals %}
           {{ s.name }}’s balance: {{s.money}} tokens<br/>
         {% endfor %}<br/>
       {% endif %}<br/>
-      Please indicate how much you would like to donate to each of the following:<br/><br/>
+      Now please indicate whether you would like to share your tokens with other participants. Insert a number in the box next to anyone you would like to donate tokens to. Note you can donate to more than one person if you want.<br/><br/>
       &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Your donation:<br/>
       <br/>
       {% for friend in friends %}
@@ -78,7 +80,7 @@
       <script>
       setTimeout("window.location.reload()",1000)
       </script>
-      <div>Thank you. Please wait and we will proceed once everyone is done with their part.</div>
+      <div>Thank you. We are now processing everyone’s decision and will move on to the next round soon. Thank you for your patience.</div>
     {% endifequal %}{% endifequal %}
     </form>
     <a href="{{ url }}">{{ url_linktext }}</a>
