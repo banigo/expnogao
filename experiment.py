@@ -48,7 +48,7 @@ class MessageSingleton(db.Model):
 def getGame():
   game = GameSingleton.all().get()
   if game == None:
-    game = GameSingleton(turn=1, allDone=False, gameOver=False, stopTurns=3, silent=0, rankOrder="ascend", countdownTime=120000)
+    game = GameSingleton(turn=1, allDone=False, gameOver=False, stopTurns=3, silent=0, rankOrder="ascend", countdownTime=60000)
     game.put()
   return game
 
