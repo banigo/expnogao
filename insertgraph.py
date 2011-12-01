@@ -124,8 +124,7 @@ class InsertFile(webapp.RequestHandler):
       if ':' in e:
         e = e[e.index('(') + 1:]    
         e = e.split(':')
-        if e[0].strip() in dist:
-          dist[e[0].strip()] = int(e[1].strip())    
+        dist[e[0].strip()] = int(e[1].strip())    
     return edges, dist
 
 class InsertDefault(webapp.RequestHandler):
