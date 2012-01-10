@@ -131,25 +131,46 @@ class MainHandler(webapp.RequestHandler):
       'globals': global_subjects,
       'turn' : game.turn,
       'countdownTime' : game.countdownTime,
+      'error_msg' : self.request.get('err'),
     }
     path = os.path.join(os.path.dirname(__file__), 'templates/index.html')
     self.response.out.write(template.render(path, template_values))
     
 class Donate(webapp.RequestHandler):
-  # TODO: check total donation (use javascript)
   def post(self):
     user = users.get_current_user()
     subject = UserMapping.gql("WHERE user=:user", user=user).get().subject
     if subject.status == 'send':
-      subject.status = 'done'
-      subject.put()
+      # check total donation
+      error_msg = []
+      total = 0
       for edge in subject.from_node:
         if len(self.request.get(edge.to_node.name)) == 0:
           continue
-        transferring = int(self.request.get(edge.to_node.name))
-        if transferring != 0:
-          game = getGame()
-          Action(sender=subject, receiver=edge.to_node, transferring=transferring, turn=game.turn).put()
+        try:
+          transferring = int(self.request.get(edge.to_node.name))
+        except ValueError:
+          error_msg.append('You cannot donate non-integer money to %s.' % edge.to_node.name)
+          continue
+        if transferring < 0:
+          error_msg.append('You cannot donate minus money to %s.' % edge.to_node.name)
+          continue
+        total += transferring
+      if total > subject.money:
+        error_msg.append('You cannot donate more money than you own.')        
+      if error_msg:
+        self.redirect('/?err=%s' % reduce(lambda x, y: x + y + "<br/>", error_msg, ''))
+        return
+      else:
+        for edge in subject.from_node:
+          if len(self.request.get(edge.to_node.name)) == 0:
+            continue
+          transferring = int(self.request.get(edge.to_node.name))
+          if transferring != 0:
+            game = getGame()
+            Action(sender=subject, receiver=edge.to_node, transferring=transferring, turn=game.turn).put()
+      subject.status = 'done'
+      subject.put()
     elif subject.status == 'done':
       pass
     self.redirect('/')

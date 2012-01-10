@@ -56,6 +56,7 @@
       setTimeout("time_up()", {{ countdownTime }});
       
       </script>
+      {{ error_msg }}
       You are {{ subject.name }}.<br/>
       {% ifnotequal turn 1 %}
         The record shows that you donated a total of {{ send }} tokens to other participants in the previous round. In the meantime, you received a total of {{ receive }} tokens donated from others in the previous round.
