@@ -86,15 +86,13 @@ class MainHandler(webapp.RequestHandler):
       game.hostName = subject.name
       game.put()
 
-    if subject.status != 'send' and subject.status != 'done':
+    if subject.status != 'send' and subject.status != 'done' and subject.status != 'view':
       subject.status = 'send'
       subject.put()
-    if subject.status == 'send' and game.allDone == True:
-       game.allDone = False
-       game.put()
     if subject.status == 'done':
       if subject.name != game.hostName:
-        subject.status == 'view'
+        subject.status = 'view'
+        subject.put()
       else:
         # check if only the host is waiting
         if Subject.gql("WHERE status='view'").count() == Subject.all().count() - 1:
@@ -205,6 +203,7 @@ def summaryGame():
     subject.status = 'send'
     subject.put()
   game.turn = game.turn + 1
+  game.allDone = False
   game.put()
 
 class Logout(webapp.RequestHandler):
