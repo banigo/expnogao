@@ -35,7 +35,6 @@ class UserMapping(db.Model):
 class GameSingleton(db.Model):
   # TODO: record many experiment
   turn = db.IntegerProperty()
-  allDone = db.BooleanProperty()
   gameOver = db.BooleanProperty()
   silent = db.IntegerProperty()
   stopTurns = db.IntegerProperty()

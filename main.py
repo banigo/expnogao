@@ -35,14 +35,6 @@ class MainHandler(webapp.RequestHandler):
       return map
     else:
       return None
-  def checkAllDone(self, key):
-    game = db.get(key)
-    if game.allDone == False:
-       game.allDone = True
-       game.put()
-       return True
-    else:
-       return False
    
   def get(self):
     # check whether all players done
@@ -203,7 +195,6 @@ def summaryGame():
     subject.status = 'send'
     subject.put()
   game.turn = game.turn + 1
-  game.allDone = False
   game.put()
 
 class Logout(webapp.RequestHandler):
