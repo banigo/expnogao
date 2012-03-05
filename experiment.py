@@ -41,6 +41,7 @@ class GameSingleton(db.Model):
   stopTurns = db.IntegerProperty()
   rankOrder = db.StringProperty(choices=set(["ascend", "descend", "random"]))
   countdownTime = db.IntegerProperty()
+  hostName = db.StringProperty()
 
 class MessageSingleton(db.Model):
   instruction = db.StringProperty()

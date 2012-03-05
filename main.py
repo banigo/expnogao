@@ -81,6 +81,11 @@ class MainHandler(webapp.RequestHandler):
       print ''
       print 'The game is expired.'
       return
+    # assign host
+    if game.hostName == None:
+      game.hostName = subject.name
+      game.put()
+
     if subject.status != 'send' and subject.status != 'done':
       subject.status = 'send'
       subject.put()
@@ -88,9 +93,12 @@ class MainHandler(webapp.RequestHandler):
        game.allDone = False
        game.put()
     if subject.status == 'done':
-      if Subject.gql("WHERE status!='done'").count() == 0:
-       if db.run_in_transaction(self.checkAllDone, game.key()):
-         summaryGame()
+      if subject.name != game.hostName:
+        subject.status == 'view'
+      else:
+        # check if only the host is waiting
+        if Subject.gql("WHERE status='view'").count() == Subject.all().count() - 1:
+          summaryGame()
     # display
     actions = Action.all().fetch(1000)
     sends = Action.gql("WHERE sender = :subject AND turn = :turn", subject=subject, turn=(game.turn - 1)).fetch(1000)

@@ -77,12 +77,12 @@
         <div>{{ friend.name }}’s balance: {{friend.money}} tokens <input type="text" name="{{ friend.name }}" id="{{ friend.name }}" value="0" onblur=check("#{{ friend.name }}") style="position:absolute; left:255px;"></div>
       {% endfor %}<br/>
       <div><input type="submit" name="status" value="Send" id="send"></div>
-    {% else %} {% ifequal subject.status "done" %}
+    {% else %}
       <script>
       setTimeout("window.location.reload()",1000)
       </script>
       <div>Thank you. We are now processing everyone’s decision and will move on to the next round soon. Thank you for your patience.</div>
-    {% endifequal %}{% endifequal %}
+    {% endifequal %}
     </form>
   </body>
 </html>
