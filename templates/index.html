@@ -3,10 +3,15 @@
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
   </head>
   <body>
-    <form action="/donate" method="post">
+    <form action="/donate" method="post" id="donate">
     {% ifequal subject.status "send" %}
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
       <script>
+      $(document).ready(function(){
+          $("#donate").submit(function(){
+              return checkAll();
+          });
+      });
       function check(divId)
       {
           if($(divId).val().search(/^[0-9]+$/) != 0)
@@ -17,16 +22,31 @@
 	  $(divId).val(parseInt($(divId).val(), 10).toString());
           {% for friend in friends %}
           total += parseInt($("#{{ friend.name }}").val(), 10);
-          {% endfor %} 
+          {% endfor %}
           if(total > parseInt("{{ subject.money }}", 10))
           {
             $(divId).val("0");
             alert("Not Enough Tokens!!");
+            clearTimeout(countdowntimer);
+            countdowntimer = setTimeout("time_up()", {{ countdownTime }});
+            return false;
           }
-
+          return true;
+      }
+      function checkAll()
+      {
+          {% for friend in friends %}
+          if(!check("#{{ friend.name }}")){ return false; }
+          {% endfor %}
+          return true;
       }
       function time_up()
       {
+        if (!checkAll()) {
+            clearTimeout(countdowntimer);
+            countdowntimer = setTimeout("time_up()", {{ countdownTime }});
+            return false;
+        }
         var paras = new Array();
         {% for friend in friends %}
         paras["{{ friend.name }}"] = $("#{{ friend.name }}").val(); 
@@ -53,7 +73,7 @@
         document.body.appendChild(form);    // Not entirely sure if this is necessary
         form.submit();
       }
-      setTimeout("time_up()", {{ countdownTime }});
+      var countdowntimer = setTimeout("time_up()", {{ countdownTime }});
       
       </script>
       {{ error_msg }}
